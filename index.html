@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jQuery Calculator</title>
+
+    <!-- Added link to the jQuery Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- Added a link to Bootstrap-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+<style>
+body{
+  background: url("./assets/images/stw.jpg");
+}
+#firsthead{
+  margin-top:40px;
+  font-size: 20px;
+}
+.work {
+  float:left;
+  position: relative;
+  text-align: center;
+  margin-top:5px;
+  width: 160px;
+  padding:12px;
+  border:2px solid green;
+  border-right:1px solid green;
+}
+.work{
+	margin-bottom: 5px;
+}
+.work .imgdesc {
+  position: absolute;
+  width:100%;
+
+  bottom: 0px;
+  padding-top:0px;
+  padding-bottom: 0px;
+  padding-left:0px;
+  
+  margin-bottom: 0px;
+  
+  color: black;
+  text-align: center;
+  
+  margin-left:auto;
+  margin-right: auto;
+}
+.work .imgdesctop {
+  position: absolute;
+  width:100%;
+
+  top: -10px;
+  padding-top:0px;
+  padding-bottom: 0px;
+  padding-left:0px;
+  
+  margin-bottom: 0px;
+  
+  color: black;
+  text-align: center;
+  
+  margin-left:auto;
+  margin-right: auto;
+}
+#characdiv{
+  font-size: 20px;
+}
+#ensection{
+  margin-top:80px;
+}
+
+.enemimd{
+  font-size:14px;
+}
+</style>
+</head>
+<body>
+<div class="container-fluid">
+<div class="row">
+<div id="firsthead" class="col-md-12"></div>
+<div id="attackers" class="col-md-12">
+<div id="kenobi" class="work">
+<h6 class="imgdesctop">Obi-Wan Kenobi</h6>
+<img src="assets/images/kenobi.jpg" class="img-responsive imd"  alt="kenobi">
+<h6 class="imgdesc">120</h6>
+</div>
+<div id="darthmaul" class="work">
+<h6 class="imgdesctop">Darth Maul</h6> 
+<img src="assets/images/darthmaul.jpg" class="img-responsive imd" alt="darthmaul">
+<h6 class="imgdesc">100</h6>
+</div>
+<div id="darthsidious" class="work">
+<h6 class="imgdesctop">Darth Sidious</h6>
+<img src="assets/images/darthsidious.jpg" class="img-responsive imd" alt="darthsidious">
+<h6 class="imgdesc">150</h6>
+</div>
+<div id="lukeskywalker" class="work">
+<h6 class="imgdesctop">Luke Skywalker</h6>
+<img src="assets/images/lukeskywalker.jpg" class="img-responsive imd" alt="lukeskywalker">
+<h6 class="imgdesc">180</h6>
+</div>
+</div>
+<div id="characdiv" class="col-md-12">Your character</div>
+</div>
+<div id="ensection" class="row">
+<div id="availenemies" class="col-md-12">Enemies available to attack</div>
+<div id="enems" class="col-md-12"></div>
+</div>
+<div id="fight" class="row">
+<div id="fightsection" class="col-md-12">Fight Section</div>
+<div class="col-md-12">
+<button id="attackbtn" class="btn-xs normal">Attack</button>
+</div>
+<div id="defender" class="col-md-12">Defender</div>
+<div id="statcomments" class="col-md-12">
+  <p id="pst1"></p>
+  <button id="resbtn" class="btn-xs btn-default">Restart</button>
+</div>
+</div>
+</div>
+
+<script>
+$("#resbtn").hide();
+var p1 = {
+  name : "kenobi",
+  hp: 120,
+  damagepoint:25,
+  battackpoint:12,
+  attackpoint:12
+};
+
+var p2 = {
+  name : "darthmaul",
+  hp: 100,
+  damagepoint:30,
+  battackpoint:12,
+  attackpoint:12
+};
+var p3 = {
+  name : "darthsidious",
+  hp: 150,
+  damagepoint:15,
+  battackpoint:8,
+  attackpoint:8
+};
+var p4 = {
+  name : "lukeskywalker",
+  hp: 180,
+  damagepoint:5,
+  battackpoint:8,
+  attackpoint:8
+};
+
+console.log("starting game");
+console.log(p4.hp);
+
+var starwarsOb = {
+  gameStarted:false,
+  mainChosen:false,
+  mainAttacker:"",
+  enemies:[],
+  defender:"",
+  playersdiv:[],
+  players:[p1,p2,p3,p4],
+  currentattacker:{},
+  currentdefender:{},
+  doCloneplayers:function(){
+    $(".work").each(function(){
+      var $player = $(this).clone(true,true);
+      $player.bind("click",playerClickfunc);
+      starwarsOb.playersdiv.push($player);
+    });
+
+  },
+  doGamereset:function(){
+    console.log("game reset");
+    $("#attackers").empty();
+    $("#enems").empty();
+    $("#defender").next().remove();
+    //this.doCloneplayers();
+    for (var i=0;i < this.playersdiv.length;i++){
+      this.playersdiv[i].bind("click",playerClickfunc);
+      $("#attackers").append(this.playersdiv[i]);
+    }
+    $("#firsthead").html("");
+    $("#characdiv").html("Your character");
+    $("#pst1").html("");
+    this.gameStarted = false;
+    this.mainChosen = false;
+    this.mainAttacker = null;
+    this.enemies = [];
+    this.defender = null;
+    this.currentattacker = {};
+    this.currentdefender = {};
+    console.log(this.players);
+  },
+  doGameupdate:function(){
+    console.log(this.currentdefender.hp);
+    console.log(this.currentattacker.hp);
+    this.currentattacker.hp  = this.currentattacker.hp - this.currentdefender.damagepoint;
+    this.currentdefender.hp  = this.currentdefender.hp - this.currentattacker.attackpoint;
+    $("#pst1").html("You attacked " + this.currentdefender.name + " for " + 
+                     this.currentattacker.attackpoint + "points" + "<br/>" + 
+                     this.currentdefender.name + " attacked you for " + 
+                     this.currentdefender.damagepoint + " points");
+
+    this.currentattacker.attackpoint = this.currentattacker.attackpoint + this.currentattacker.battackpoint;
+    var $curattacker = $("#attackers .imgdesc");
+    console.log($curattacker);
+    $curattacker.html(this.currentattacker.hp);
+  
+    var $curdefender = $("#defender + .work .imgdesc");
+    console.log($curdefender);
+    console.log($curdefender.html());
+    console.log(this.currentdefender.hp);
+    $curdefender.html(this.currentdefender.hp);
+    
+    if(this.currentattacker.hp <= 0){
+      this.gameStarted = false;
+      console.log("game over");
+      $("#pst1").html("you loose the game restart!!!");
+     // $("button").css("display","inline-block");
+     var $resbtn = $("<button>");
+     $resbtn.addClass("btn-xs btn-default");
+     $resbtn.attr("id","resbtn");
+     $resbtn.bind("click",restartClicked);
+     $resbtn.html("Restart");
+     $("#pst1").after($resbtn);
+     //this.currentdefender = null;
+      
+
+    }
+    else if(this.currentattacker.hp > 0 && this.currentdefender.hp <= 0){
+      console.log("defender gone");
+      this.gameStarted = false;
+      $("#curdefender").remove();
+      $("#pst1").html(this.currentdefender.name + " defeated choose another enemy");
+      //this.currentdefender = "";
+      //this.defender = "";
+      if(this.enemies.length == 1){
+        this.gameStarted = false; 
+        $("#pst1").html("You win the game");
+        var $resbtn = $("<button>");
+        $resbtn.addClass("btn-xs btn-default");
+        $resbtn.attr("id","resbtn");
+        $resbtn.bind("click",restartClicked);
+        $resbtn.html("Restart");
+        $("#pst1").after($resbtn);
+       // this.currentdefender = null;
+      
+      }
+      else if(this.enemies.length >= 2){
+         var idx = this.enemies.indexOf(this.currentdefender.name);
+         this.enemies.splice(idx,1);
+         console.log(this.enemies);
+         //this.currentdefender = null;
+         //this.defender = null;
+      }
+      
+
+    }
+    else if(this.currentattacker.hp > 0 && this.currentdefender.hp > 0){
+      console.log("game on between attacker-defender");
+
+    }
+    else{
+      $("#pst1").html("you loose the game restart!!");
+      //this.doGamereset();
+    }
+
+  }
+};
+
+//console.log(stawarsOb);
+starwarsOb.doCloneplayers();
+
+function restartClicked(){
+   console.log("restart clicked game");
+   starwarsOb.doGamereset();
+   $(this).remove();
+   
+
+}
+
+
+function playerClickfunc(){
+    console.log("heloone");
+   //alert($(this).attr("alt"));
+  if(starwarsOb.mainChosen == false){
+   console.log("hello");
+   var $thisalt = $(this).attr("id");
+   console.log($thisalt);
+   starwarsOb.mainAttacker = $thisalt;
+   starwarsOb.mainChosen = true;
+   starwarsOb.gameStarted = true;
+   for(var i=0 ;i < starwarsOb.players.length;i++){
+     if(starwarsOb.players[i].name == $thisalt){
+          starwarsOb.currentattacker = Object.assign({}, starwarsOb.players[i]);
+          console.log(starwarsOb.currentattacker);
+     }
+   }
+   var $attacker  = $(this).clone(true,true);
+   console.log($attacker);
+   //var $imds = $(".imd");
+   //console.log($imds.length);
+
+   $(".work").each(function(){
+     if($(this).attr("id") != $thisalt){
+       starwarsOb.enemies.push($(this).attr("id"));
+       //$(this).removeClass("imd");
+       var $curob = $(this);
+       //$curob.removeClass("imd");
+      
+       var $curparent = $curob.clone(false,false);
+       $curparent.find("img").removeClass("imd");
+       $curparent.addClass("enemimd");
+       $curparent.bind("click",clickFunc);
+       console.log($curparent);
+       $("#enems").append($curparent);
+      
+      // $($imds[i]).remove();        
+     }
+   });
+   $("#firsthead").html("Your character");
+   $("#characdiv").html("");
+   $("#attackers").empty();
+   $("#attackers").append($attacker);
+ }
+ 
+
+}
+
+
+function clickFunc(){
+  console.log("hellow");
+  console.log($(this));
+  var $thisalt = $(this).attr("id");
+  console.log($thisalt);
+  starwarsOb.currentDefender = $thisalt;
+  starwarsOb.hasDefender = true;
+  starwarsOb.gameStarted = true;
+  for(var i=0 ;i < starwarsOb.players.length;i++){
+     if(starwarsOb.players[i].name == $thisalt){
+          starwarsOb.currentdefender = Object.assign({}, starwarsOb.players[i]);
+          console.log(starwarsOb.currentdefender);
+     }
+   }
+  var $defender  = $(this).clone();
+  $defender.attr("id","curdefender");
+  $defender.addClass("col-md-12");
+  console.log($defender);
+  $(this).remove();
+  $("#defender").after($defender);
+  $("#pst1").html("");
+} 
+
+
+$("#attackbtn").on("click",function(){
+  console.log("attack pressed");
+  if(starwarsOb.gameStarted === true){
+    if(starwarsOb.currentattacker != null && starwarsOb.currentdefender != null){
+        starwarsOb.doGameupdate();
+    }
+ }
+});
+
+
+$(".imd").on("click",function(){
+  console.log("heloone");
+   //alert($(this).attr("alt"));
+  if(starwarsOb.mainChosen == false){
+   console.log("hello");
+   starwarsOb.gameStarted = true;
+   var $thisalt = $(this).attr("alt");
+   console.log($thisalt);
+   starwarsOb.mainAttacker = $thisalt;
+   starwarsOb.mainChosen = true;
+   for(var i=0 ;i < starwarsOb.players.length;i++){
+     if(starwarsOb.players[i].name == $thisalt){
+          starwarsOb.currentattacker = Object.assign({}, starwarsOb.players[i]);
+          console.log(starwarsOb.currentattacker);
+     }
+   }
+   var $attacker  = $(this).parent().clone(true,true);
+   console.log($attacker);
+   //var $imds = $(".imd");
+   //console.log($imds.length);
+
+   $(".imd").each(function(){
+     if($(this).attr("alt") != $thisalt){
+       starwarsOb.enemies.push($(this).attr("alt"));
+       //$(this).removeClass("imd");
+       var $curob = $(this);
+       //$curob.removeClass("imd");
+      
+       var $curparent = $curob.parent().clone(false,false);
+       $curparent.find("img").removeClass("imd");
+       $curparent.addClass("enemimd");
+       $curparent.bind("click",clickFunc);
+       console.log($curparent);
+       $("#enems").append($curparent);
+      
+      // $($imds[i]).remove();        
+     }
+   });
+   $("#firsthead").html("Your character");
+   $("#characdiv").html("");
+   $("#attackers").empty();
+   $("#attackers").append($attacker);
+ }
+ 
+
+});
+
+</script>
+</body>
+</html>
