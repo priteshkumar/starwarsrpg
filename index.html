@@ -26,9 +26,13 @@ body{
   padding:12px;
   border:2px solid green;
   border-right:1px solid green;
+
 }
 .work{
 	margin-bottom: 5px;
+}
+.work:last-child{
+  border-right: 2px solid green;
 }
 .work .imgdesc {
   position: absolute;
@@ -68,19 +72,28 @@ body{
   font-size: 20px;
 }
 #ensection{
-  margin-top:80px;
+  margin-top:60px;
 }
 
 .enemimd{
   font-size:14px;
 }
+#availenemies{
+  font-size: 20px;
+}
+#fightsection{
+  font-size: 20px;
+}
+#defender{
+  font-size:20px;
+}
 </style>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container">
 <div class="row">
-<div id="firsthead" class="col-md-12"></div>
-<div id="attackers" class="col-md-12">
+<div id="firsthead" class="col-sm-12 col-md-12"></div>
+<div id="attackers" class="col-sm-12 col-md-12">
 <div id="kenobi" class="work">
 <h6 class="imgdesctop">Obi-Wan Kenobi</h6>
 <img src="assets/images/kenobi.jpg" class="img-responsive imd"  alt="kenobi">
@@ -102,19 +115,20 @@ body{
 <h6 class="imgdesc">180</h6>
 </div>
 </div>
-<div id="characdiv" class="col-md-12">Your character</div>
+<div id="characdiv" class="col-sm-12 col-md-12">Your character</div>
 </div>
 <div id="ensection" class="row">
-<div id="availenemies" class="col-md-12">Enemies available to attack</div>
-<div id="enems" class="col-md-12"></div>
+<div id="availenemies" class="col-sm-12 col-md-12">Enemies available to attack</div>
+<div id="enems" class="col-sm-12 col-md-12"></div>
 </div>
 <div id="fight" class="row">
-<div id="fightsection" class="col-md-12">Fight Section</div>
+<div id="fightsection" class="col-sm-12 col-md-12">Fight Section</div>
 <div class="col-md-12">
 <button id="attackbtn" class="btn-xs normal">Attack</button>
 </div>
-<div id="defender" class="col-md-12">Defender</div>
-<div id="statcomments" class="col-md-12">
+<div id="defender" class="col-sm-12 col-md-12">Defender</div>
+<div id="curdefenderdiv" class="col-sm-12 col-md-12"></div>
+<div id="statcomments" class="col-sm-12 col-md-12">
   <p id="pst1"></p>
   <button id="resbtn" class="btn-xs btn-default">Restart</button>
 </div>
@@ -178,7 +192,7 @@ var starwarsOb = {
     console.log("game reset");
     $("#attackers").empty();
     $("#enems").empty();
-    $("#defender").next().remove();
+    $("#curdefenderdiv").empty();
     //this.doCloneplayers();
     for (var i=0;i < this.playersdiv.length;i++){
       this.playersdiv[i].bind("click",playerClickfunc);
@@ -211,7 +225,7 @@ var starwarsOb = {
     console.log($curattacker);
     $curattacker.html(this.currentattacker.hp);
   
-    var $curdefender = $("#defender + .work .imgdesc");
+    var $curdefender = $("#curdefenderdiv .imgdesc");
     console.log($curdefender);
     console.log($curdefender.html());
     console.log(this.currentdefender.hp);
@@ -302,6 +316,7 @@ function playerClickfunc(){
      }
    }
    var $attacker  = $(this).clone(true,true);
+   $attacker.css("border-right","2px solid green");
    console.log($attacker);
    //var $imds = $(".imd");
    //console.log($imds.length);
@@ -316,6 +331,7 @@ function playerClickfunc(){
        var $curparent = $curob.clone(false,false);
        $curparent.find("img").removeClass("imd");
        $curparent.addClass("enemimd");
+       $curparent.css("background","red");
        $curparent.bind("click",clickFunc);
        console.log($curparent);
        $("#enems").append($curparent);
@@ -350,9 +366,12 @@ function clickFunc(){
   var $defender  = $(this).clone();
   $defender.attr("id","curdefender");
   $defender.addClass("col-md-12");
+  $defender.css("background","grey");
+  $defender.css("border-right","2px solid green");
   console.log($defender);
   $(this).remove();
-  $("#defender").after($defender);
+  //$("#defender").after($defender);
+  $("#curdefenderdiv").append($defender);
   $("#pst1").html("");
 } 
 
@@ -384,6 +403,7 @@ $(".imd").on("click",function(){
      }
    }
    var $attacker  = $(this).parent().clone(true,true);
+   $attacker.css("border-right","2px solid green");
    console.log($attacker);
    //var $imds = $(".imd");
    //console.log($imds.length);
@@ -398,13 +418,16 @@ $(".imd").on("click",function(){
        var $curparent = $curob.parent().clone(false,false);
        $curparent.find("img").removeClass("imd");
        $curparent.addClass("enemimd");
+       $curparent.css("background","red");
        $curparent.bind("click",clickFunc);
        console.log($curparent);
        $("#enems").append($curparent);
+
       
       // $($imds[i]).remove();        
      }
    });
+   $("#enems").last().css("border-right","2px solid green");
    $("#firsthead").html("Your character");
    $("#characdiv").html("");
    $("#attackers").empty();
